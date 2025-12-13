@@ -1,4 +1,4 @@
-This is LuaHBTeX, Version 1.22.0 (TeX Live 2025)  (format=lualatex 2025.11.22)  14 DEC 2025 03:13
+This is LuaHBTeX, Version 1.22.0 (TeX Live 2025)  (format=lualatex 2025.11.22)  14 DEC 2025 04:44
  restricted system commands enabled.
 **main.tex
 (./main.tex
@@ -1054,38 +1054,38 @@ Package luatex.def Info: logo-sae.jpg  used on input line 165.
 <./hinh1-3.jpg><./hinh1-4.png><./hinh1-6.jpg>]
 File: logo-uet.jpg Graphic file (type jpg)
 <use logo-uet.jpg>
-Package luatex.def Info: logo-uet.jpg  used on input line 184.
+Package luatex.def Info: logo-uet.jpg  used on input line 183.
 (luatex.def)             Requested size: 42.67642pt x 28.45274pt.
 File: logo-sae.jpg Graphic file (type jpg)
 <use logo-sae.jpg>
-Package luatex.def Info: logo-sae.jpg  used on input line 184.
+Package luatex.def Info: logo-sae.jpg  used on input line 183.
 (luatex.def)             Requested size: 33.4824pt x 28.45274pt.
 File: logo-uet.jpg Graphic file (type jpg)
 <use logo-uet.jpg>
-Package luatex.def Info: logo-uet.jpg  used on input line 184.
+Package luatex.def Info: logo-uet.jpg  used on input line 183.
 (luatex.def)             Requested size: 42.67642pt x 28.45274pt.
 File: logo-sae.jpg Graphic file (type jpg)
 <use logo-sae.jpg>
-Package luatex.def Info: logo-sae.jpg  used on input line 184.
+Package luatex.def Info: logo-sae.jpg  used on input line 183.
 (luatex.def)             Requested size: 33.4824pt x 28.45274pt.
  [6
 
 ]
 File: logo-uet.jpg Graphic file (type jpg)
 <use logo-uet.jpg>
-Package luatex.def Info: logo-uet.jpg  used on input line 189.
+Package luatex.def Info: logo-uet.jpg  used on input line 188.
 (luatex.def)             Requested size: 42.67642pt x 28.45274pt.
 File: logo-sae.jpg Graphic file (type jpg)
 <use logo-sae.jpg>
-Package luatex.def Info: logo-sae.jpg  used on input line 189.
+Package luatex.def Info: logo-sae.jpg  used on input line 188.
 (luatex.def)             Requested size: 33.4824pt x 28.45274pt.
 File: logo-uet.jpg Graphic file (type jpg)
 <use logo-uet.jpg>
-Package luatex.def Info: logo-uet.jpg  used on input line 189.
+Package luatex.def Info: logo-uet.jpg  used on input line 188.
 (luatex.def)             Requested size: 42.67642pt x 28.45274pt.
 File: logo-sae.jpg Graphic file (type jpg)
 <use logo-sae.jpg>
-Package luatex.def Info: logo-sae.jpg  used on input line 189.
+Package luatex.def Info: logo-sae.jpg  used on input line 188.
 (luatex.def)             Requested size: 33.4824pt x 28.45274pt.
 
 [7
@@ -1117,7 +1117,7 @@ Here is how much of LuaTeX's memory you used:
 h, 61 attribute, 61 glue_spec, 61 attribute_list, 4 write, 1 pdf_start_link, 1 p
 df_end_link, 1 pdf_action, 12 pdf_colorstack, 2 pdf_setmatrix, 2 pdf_save, 2 pdf
 _restore nodes
-   avail lists: 2:914,3:537,4:207,5:232,6:127,7:4223,8:5,9:1003,10:26,11:99
+   avail lists: 2:914,3:537,4:207,5:232,6:127,7:4118,8:5,9:1003,10:18,11:102
  43561 multiletter control sequences out of 65536+600000
  75 fonts using 5701343 bytes
  101i,17n,101p,424b,656s stack positions out of 10000i,1000n,20000p,200000b,200000s
@@ -1129,13 +1129,12 @@ tf></usr/local/texlive/2025/texmf-dist/fonts/opentype/public/lm/lmsans12-regular
 .otf></usr/local/texlive/2025/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi9.pf
 b></usr/local/texlive/2025/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy9.pfb><
 /usr/local/texlive/2025/texmf-dist/fonts/type1/public/amsfonts/symbols/msam10.pf
-b></usr/local/texlive/2025/texmf-dist/fonts/type1/public/amsfonts/symbols/msam7.
-pfb></usr/local/texlive/2025/texmf-dist/fonts/type1/public/amsfonts/symbols/msbm
-10.pfb>
-Output written on main.pdf (7 pages, 907450 bytes).
+b></usr/local/texlive/2025/texmf-dist/fonts/type1/public/amsfonts/symbols/msbm10
+.pfb>
+Output written on main.pdf (7 pages, 898806 bytes).
 
-PDF statistics: 286 PDF objects out of 1000 (max. 8388607)
- 233 compressed objects within 3 object streams
+PDF statistics: 282 PDF objects out of 1000 (max. 8388607)
+ 230 compressed objects within 3 object streams
  17 named destinations out of 1000 (max. 131072)
  32 words of extra memory for PDF output out of 10000 (max. 100000000)
 
