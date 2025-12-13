@@ -1,0 +1,2 @@
+\beamer@sectionintoc {1}{Tổng quan}{3}{0}{1}
+\beamer@sectionintoc {2}{Cơ sở lý thuyết}{7}{0}{2}

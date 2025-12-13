@@ -1,0 +1,190 @@
+\documentclass{beamer}
+\usepackage{amsmath,amssymb} % cho \varnothing
+
+
+\title{Tính toán tối ưu quá trình chuyển đổi đội hình trong trình diễn ánh sáng}
+
+
+\author{Vũ Đức Lương \\
+    \small Giảng viên hướng dẫn: TS. Nguyễn Hoàng Quân}
+\institute{Viện Công Nghệ Hàng Không Vũ Trụ}
+\date{15/12/2025}
+
+% ---- Logo mọi slide ----
+\setbeamertemplate{headline}{
+  \begin{beamercolorbox}[wd=\paperwidth,ht=1.2cm,dp=0.2cm]{}
+    \hspace{0.3cm}
+    \includegraphics[height=1cm]{logo-uet.jpg}
+    \hfill
+    {\Large\bfseries \insertsection}
+    \hfill
+    \includegraphics[height=1cm]{logo-sae.jpg}
+    \hspace{0.3cm}
+  \end{beamercolorbox}
+}
+
+
+\begin{document}
+
+\frame{\titlepage}
+
+\begin{frame}
+\frametitle{Nội dung đồ án}
+   \begin{itemize}
+        \item Tổng quan
+        \item Cơ sở lý thuyết
+        \item Triển khai thuật toán quy hoạch đường đi trên GPU
+        \item Mô phỏng và phân tích kết quả
+        \item Kết luận và hướng phát triển
+    \end{itemize}
+\end{frame}
+\section{Tổng quan}
+
+
+\begin{frame}
+\frametitle{Giới thiệu}
+\small
+\begin{itemize}
+    \item Trong những năm gần đây, trình diễn ánh sáng bằng drone đã trở thành xu hướng mới trong các sự kiện lớn. Công nghệ này sử dụng các UAV bay theo đội hình để tạo hiệu ứng ánh sáng ấn tượng, có tính linh hoạt cao, an toàn và thân thiện với môi trường, dần thay thế pháo hoa truyền thống.
+    \item Công nghệ này thu hút sự quan tâm của các công ty lớn như Intel, Ehang, Damoda với các màn trình diễn quy mô lớn.
+\end{itemize}
+\vspace{0.3cm}
+
+% ----- 3 ảnh phía dưới -----
+\begin{columns}
+    \column{0.33\textwidth}
+    \centering
+    \includegraphics[width=\linewidth]{intel.jpg}
+
+    \column{0.3\textwidth}
+    \centering
+    \includegraphics[width=\linewidth]{ehang.jpg}
+
+    \column{0.33\textwidth}
+    \centering
+    \includegraphics[width=\linewidth]{damoda.jpg}
+\end{columns}
+\end{frame}
+
+\begin{frame}
+\frametitle{Phần cứng drone trình diễn}
+
+\footnotesize
+
+\begin{columns}[T]
+    % ===== CỘT TRÁI =====
+    \column{0.48\textwidth}
+    \begin{itemize}
+        \item Drone trình diễn ánh sáng thường sử dụng quadrotor do chi phí thấp và cấu trúc linh hoạt, gồm bộ điều khiển trung tâm tích hợp LED, khung sợi carbon và bốn cụm động cơ [1].
+        \item Drone không thể đổi hướng và tốc độ tức thì; quỹ đạo bay phải tuân theo giới hạn vận tốc và gia tốc để đảm bảo an toàn và tính thẩm mỹ.
+    \end{itemize}
+
+    % ===== CỘT PHẢI =====
+    \column{0.52\textwidth}
+    \begin{center}
+        \vspace{-0.5cm}
+
+        % ẢNH
+        \includegraphics[
+            width=\linewidth,
+            height=0.32\textheight,
+            keepaspectratio
+        ]{hinh1-2.png}
+
+        \vspace{0.15cm}
+
+        % BẢNG
+        \resizebox{\linewidth}{!}{
+        \begin{tabular}{|p{2.8cm}|p{3.2cm}|p{3.2cm}|}
+            \hline
+            \textbf{Thông số} & \textbf{Collmot [2]} & \textbf{Damoda L3 [3]} \\ \hline
+            Loại & Quadrotor & Quadrotor \\ \hline
+            Trọng lượng & $< 2$ kg & 530 g \\ \hline
+            Kích thước & $\varnothing < 100$ cm, cao $\sim$30 cm & $\varnothing$ 320 mm, cao 115 mm \\ \hline
+            Thời gian bay & 10--12 phút & 20--25 phút \\ \hline
+            Tốc độ tối đa & 6 m/s & 10 m/s \\ \hline
+            Độ cao tối đa & 120 m & 120 m \\ \hline
+            Khoảng cách tối thiểu & 7 m & 1.4 m \\ \hline
+        \end{tabular}
+        }
+    \end{center}
+\end{columns}
+\vspace{0.1cm}
+{\tiny
+[1] Huang, Jie, Guoqing Tian, Jiancheng Zhang, and Yutao Chen, ”On Unmanned Aerial Vehicles Light Show Systems: Algorithms, Software and Hardware” Applied Sciences, 2021, Vol 11, no. 16. 
+
+
+[2] CollMot Robotics Ltd., ”CollMot multi drone show spec tech”.  
+
+[3] Shenzhen DAMODA Intelligent Control Technology Co., Ltd, ”Light show Drone L3”. 
+}
+\end{frame}
+\begin{frame}
+\frametitle{\small Triển khai hệ thống trong thực tế}
+\footnotesize
+
+\begin{columns}[T]
+    % ===== CỘT TRÁI =====
+    \column{0.52\textwidth}
+    Triển khai các hệ thống drone trình diễn ánh sáng chế độ điều khiển bán tự động được sử dụng phổ biến do chế độ điều khiển tự động yêu cầu các cảm biến và khả năng tính toán của bộ điều khiển
+    bay ở mỗi drone phải có độ chính xác cao. Trong khi đó chế độ điều khiển thủ công lại có tính rủi ro cao khi trình diễn số lượng drone quy mô lớn do có thể gặp lỗi truyền thông giữa các UAV và 
+    trạm mặt đất cũng như khả năng điều khiển của phi công.
+
+    \vspace{0.2 cm}
+    \fontsize{5}{6}\selectfont{
+        [1] Huang, Jie, Guoqing Tian, Jiancheng Zhang, and Yutao Chen, ”On Unmanned Aerial Vehicles Light Show Systems: Algorithms, Software and Hardware” Applied Sciences, 2021, Vol 11, no. 16. 
+
+        [4] H.Sun, J.Qi, M.Wang, ”Path Planning for Dense Drone Formation Based on Modiefield Aritificial Potential Field”, Proceedings of 39th Chinese Control Conference, Shenyang, China, 2020, pp.4658-4664. 
+    }
+
+
+\column{0.48\textwidth}
+\begin{center}
+\vspace{-0.4cm}
+
+% ===== KHỐI ẢNH =====
+    \begin{minipage}[T]{0.48\linewidth}
+    % Ảnh lớn bên trái
+        \includegraphics[width=\linewidth]{hinh1-3.jpg}
+    \end{minipage}
+    \hfill
+    \begin{minipage}[T]{0.48\linewidth}
+    % Ảnh nhỏ trên
+        \vspace{-0.6cm}   % ← ĐẨY CAO CẢ 2 ẢNH NHỎ
+        \includegraphics[width=\linewidth]{hinh1-4.png}
+        \vspace{0.25cm}
+
+    % Ảnh nhỏ dưới
+        \includegraphics[width=\linewidth]{hinh1-6.jpg}
+\end{minipage}
+
+\end{center}
+
+\end{columns}
+
+\end{frame}    
+\begin{frame}
+\frametitle{Mục tiêu đồ án}
+\tiny
+{Đồ án tập trung phát triển một công cụ giúp tính toán các waypoint các drone trong quá trình chuyển đổi đội hình với đầu vào là các đội hình được thiết kế sẵn qua các phần mềm như blender
+dựa trên hai thuật toán: 
+\begin{itemize}
+\item Thuật toán Hungarian giúp các drone được gán vào các mục tiêu tối ưu sao cho tổng quãng đường đi là nhỏ nhất.
+\item Thuật thoán trường thế năng nhân tạo đã được cải tiến giúp các drone không va chạm trong quá trình chuyển đổi cũng như đảm bảo các yêu cầu về mặt động học.Ngoài ra thành phần tính toán lực tổng hợp của thuật toán cũng sẽ được triển khai tính toán trên GPU thông
+qua PyOpenCL giúp tăng tốc thuật toán quy hoạch đường đi trong trường hợp mô phỏng với số lượng drone lớn.
+\end{itemize}
+Các thuật toán được thực hiện theo hướng lập kế hoạch offline (tính toán từ trước sau đó triển khai) và được kiểm chứng thông qua mô phỏng.}
+
+\vspace{0.1 cm}
+\tiny{
+    [1] Huang, Jie, Guoqing Tian, Jiancheng Zhang, and Yutao Chen, ”On Unmanned Aerial Vehicles Light Show Systems: Algorithms, Software and Hardware” Applied Sciences, 2021, Vol 11, no. 16. 
+
+    [4] H.Sun, J.Qi, M.Wang, ”Path Planning for Dense Drone Formation Based on Modiefield Aritificial Potential Field”, Proceedings of 39th Chinese Control Conference, Shenyang, China, 2020, pp.4658-4664. 
+    }
+\end{frame}
+\section{Cơ sở lý thuyết}
+\begin{frame}
+    \frametitle{Mô tả bài toán}
+    \
+\end{frame}
+\end{document}
