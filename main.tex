@@ -1,10 +1,9 @@
+
 \documentclass{beamer}
 \usepackage{amsmath,amssymb} % cho \varnothing
-
-
+\setbeamerfont{math text}{size=\scriptsize}
+\setbeamerfont{math text displayed}{size=\scriptsize}
 \title{Tính toán tối ưu quá trình chuyển đổi đội hình trong trình diễn ánh sáng}
-
-
 \author{Vũ Đức Lương \\
     \small Giảng viên hướng dẫn: TS. Nguyễn Hoàng Quân}
 \institute{Viện Công Nghệ Hàng Không Vũ Trụ}
@@ -166,7 +165,7 @@
 \begin{frame}
 \frametitle{Mục tiêu đồ án}
 \fontsize{10}{12}\selectfont
-{Đồ án tập trung phát triển một công cụ giúp tính toán các waypoint các drone trong quá trình chuyển đổi đội hình với đầu vào là các đội hình được thiết kế sẵn qua các phần mềm như blender
+{Đồ án tập trung phát triển một công cụ giúp tính toán các waypoint các drone trong quá trình chuyển đổi đội hình với đầu vào là các đội hình được thiết kế sẵn
 dựa trên hai thuật toán: 
 \begin{itemize}
 \item Thuật toán Hungarian giúp các drone được gán vào các mục tiêu tối ưu sao cho tổng quãng đường đi là nhỏ nhất.
@@ -178,13 +177,203 @@ Các thuật toán được thực hiện theo hướng lập kế hoạch offli
 \vspace{0.1 cm}
 \tiny{
     [4] H.Sun, J.Qi, M.Wang, ”Path Planning for Dense Drone Formation Based on Modiefield Aritificial Potential Field”, Proceedings of 39th Chinese Control Conference, Shenyang, China, 2020, pp.4658-4664. 
-    
+
     [5] D. Nar and R. Kotecha, “Optimal Waypoint Assignment for Designing Drone Light Show Formations”, Results Control Optimal, 2022, vol. 9, p. 100174.
     }
 \end{frame}
 \section{Cơ sở lý thuyết}
+\begin{frame}[shrink=10]
+\frametitle{Mô tả bài toán}
+\scriptsize
+\begin{columns}[T]
+% ===== CỘT TRÁI =====
+\column{0.35\textwidth}
+Trong không gian 3D, mỗi drone được xem như là một vật rắn và vị trí của nó
+được đại diện bởi $\textbf{p}_i = (x_i, y_i, z_i)$.
+
+    Vị trí đội hình bắt đầu:
+    \begin{equation}
+        \textbf{P}_S =
+        [\textbf{p}^s_1, \textbf{p}^s_2, \ldots, \textbf{p}^s_{n-1}, \textbf{p}^s_n]
+    \end{equation}
+
+    Vị trí đội hình tại thời điểm $t$:
+    \begin{equation}
+        \textbf{P}_t =
+        [\textbf{p}^t_1, \textbf{p}^t_2, \ldots, \textbf{p}^t_{n-1}, \textbf{p}^t_n]
+    \end{equation}
+
+    Vị trí đội hình mục tiêu:
+    \begin{equation}
+        \textbf{P}_e =
+        [\textbf{p}^e_1, \textbf{p}^e_2, \ldots, \textbf{p}^e_{n-1}, \textbf{p}^e_n]
+    \end{equation}
+\column{0.65\textwidth}
+    \scriptsize
+
+    Ma trận phân công nhiệm vụ S.
+    \begin{equation}
+    \textbf{S} = 
+    \begin{bmatrix}
+        s_{1,1} & s_{1,2} & \cdots & s_{1,n-1} & s_{1,n} \\
+        s_{2,1} & s_{2,2} & \cdots & s_{2,n-1} & s_{2,n} \\
+        \vdots  & \vdots  & \ddots & \vdots     & \vdots  \\
+        s_{n-1,1} & s_{n-1,2} & \cdots & s_{n-1,n-1} & s_{n-1,n} \\
+            s_{n,1} & s_{n,2} & \cdots & s_{n,n-1} & s_{n,n}
+    \end{bmatrix}
+    \end{equation}
+    
+
+    Khi nhiệm vụ i được phân công cho drone j thì $s_{i,j} = 1$ ngược lại thì $s_{i,j} = 0$, mục tiêu của bài toán phân công đội hình là nhằm tối thiểu hóa tổng 
+    chi phí phân công và mỗi drone i chỉ được phân công cho một nhiệm vụ j. 
+    \vspace{-0.2 cm}
+    \begin{equation}
+      \text{min}\sum_{i=1}^n \sum_{j=1}^n s_{i,j} d_{i,j}
+    \end{equation}
+    \vspace{-0.2 cm}
+    \begin{equation}
+    \left\{
+    \begin{aligned}
+        \sum_{j=1}^n s_{i,j} &= 1, \quad 1 \leq i \leq n \\[10pt]
+        \sum_{i=1}^n s_{i,j} &= 1, \quad 1 \leq j \leq n
+    \end{aligned}
+    \right.
+    \end{equation}
+\end{columns}
+
+\end{frame}
+
 \begin{frame}
-    \frametitle{Mô tả bài toán}
-    \
+    \frametitle{Áp dụng thuật toán Hungarian}
+    Thuật toán Hungarian có độ phức tạp $O(n^3)$ được áp dụng với đầu vào là mảng vị trí bắt đầu các drone và vị trí các mục tiêu từ thiết kế và đầu ra là ánh xạ giữa drone và mục tiêu
+
+    \centering
+    \includegraphics[
+     width=0.8\linewidth,
+     height=0.7\textheight,
+     keepaspectratio
+]{hungarian.png}
+\end{frame}
+\begin{frame}
+\frametitle{Thuật toán trường thế năng nhân tạo}
+
+\scriptsize
+
+\textbf{Trường thế hấp dẫn}
+\begin{equation}
+U_{\text{att}_i}
+= \frac{1}{2}\,\varepsilon
+\left\| \mathbf{p}^e_i - \mathbf{p}^t_i \right\|^{2}
+\end{equation}
+
+\vspace{0.2cm}
+
+\textbf{Trường thế đẩy}
+\begin{equation}
+U_{\text{rep}_{i,O}} =
+\begin{cases}
+\displaystyle
+\frac{1}{2}\,\eta
+\left(
+\frac{1}{\left\| \mathbf{p}^t_i - \mathbf{p}^t_O \right\|}
+- \frac{1}{\rho}
+\right)^{2},
+& \text{nếu } \left\| \mathbf{p}^t_i - \mathbf{p}^t_O \right\| \le \rho, \\[6pt]
+0,
+& \text{nếu } \left\| \mathbf{p}^t_i - \mathbf{p}^t_O \right\| > \rho.
+\end{cases}
+\end{equation}
+\textbf{Trường thế tổng hợp}
+\begin{equation}
+    U_{res_i}= U_{att_i} + \sum_{O=1}^m U_{rep_{i,O}}
+\end{equation}
+\textbf{Lực tổng hợp}
+\begin{equation}
+    \textbf{F}_{res_i} = -\nabla{U_{res_i}}.
+\end{equation}
+\tiny {
+    O. Khatib, ”Real-time obstacle avoidance for manipulators and mobile robots”,Proceedings. 1985 IEEE International Conference on Robotics and Automation,1985.
+}
+\end{frame}
+\begin{frame}
+\frametitle{Thuật toán trường thế năng nhân tạo}
+Sau khi tính toán được lực tổng hợp có thể tính toán các waypoint trong quá trình trình drone di chuyển ở bước lặp tiếp theo bằng cách dịch một khoảng $\lambda$ theo hướng lực tính toán được
+\vspace{-0.2 cm}
+\scriptsize
+\begin{equation}
+    \textbf{p}^{t+1}_i = \textbf{p}^t_i + \lambda \cdot \frac{\textbf{F}^t_{res_i}}{\|\textbf{F}^t_{res_i}\|}
+\end{equation}
+\centering
+\includegraphics[
+width=0.6\linewidth,
+height=0.6\textheight,
+keepaspectratio
+]{hinh2-1.png}
+\end{frame}
+
+\begin{frame}
+\frametitle{Thuật toán trường thế năng nhân tạo cải tiến cho drone trình diễn ánh sáng}
+
+\begin{columns}[T]
+
+% ===== CỘT TRÁI =====
+\column{0.7\textwidth}
+\scriptsize
+
+\textbf{Bước nhảy ràng buộc động học}
+\begin{equation}
+{\scriptsize
+\lambda =
+\begin{cases}
+\sqrt{2ad_{\min}}\cdot T, & d_{\min} \le \dfrac{v_{\max}^2}{2a} \\
+v_{\max}\cdot T, & \text{ngược lại}
+\end{cases}}
+\end{equation}
+
+\begin{equation}
+{\scriptsize
+d_{\min}
+=
+\min\!\left(
+\|\mathbf{p}_i^s-\mathbf{p}_i^t\|,
+\|\mathbf{p}_i^e-\mathbf{p}_i^t\|,
+\|\mathbf{p}_O^t-\mathbf{p}_i^t\|
+\right)}
+\end{equation}
+
+\textbf{Trường thế đẩy phân lớp}
+\begin{equation}
+{\scriptsize
+U_{\text{rep},o} =
+\begin{cases}
+\frac{1}{2}\eta_1\!\left( \frac{1}{\|\mathbf{p}_o^t-\mathbf{p}_i^t\|} - \frac{1}{\rho_1} \right)^2,
+& \|\mathbf{p}_o^t-\mathbf{p}_i^t\| \le \rho_1 \\[4pt]
+
+\frac{1}{2}\eta_2\!\left( \frac{1}{\|\mathbf{p}_o^t-\mathbf{p}_i^t\|} - \frac{1}{\rho_2} \right)^2,
+& \rho_1 < \|\mathbf{p}_o^t-\mathbf{p}_i^t\| \le \rho_2 \\[4pt]
+
+0, & \|\mathbf{p}_o^t-\mathbf{p}_i^t\| > \rho_2
+\end{cases}}
+\end{equation}
+
+% ===== CỘT PHẢI =====
+\column{0.38\textwidth}
+\centering
+
+\includegraphics[
+  width=\linewidth,
+  height=\textheight,
+  keepaspectratio
+]{hinh2-2.png}
+
+\vspace{0.2cm}
+
+\includegraphics[
+  width=\linewidth,
+  height=\textheight,
+  keepaspectratio
+]{hinh2-3.png}
+
+\end{columns}
 \end{frame}
 \end{document}
