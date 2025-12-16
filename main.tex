@@ -1,5 +1,6 @@
 
 \documentclass{beamer}
+\usepackage{pgfpages}
 \usepackage{amsmath,amssymb} % cho \varnothing
 \setbeamerfont{math text}{size=\scriptsize}
 \setbeamerfont{math text displayed}{size=\scriptsize}
@@ -9,19 +10,17 @@
 \institute{Viện Công Nghệ Hàng Không Vũ Trụ}
 \date{15/12/2025}
 
-% ---- Logo mọi slide ----
 \setbeamertemplate{headline}{
   \begin{beamercolorbox}[wd=\paperwidth,ht=1.2cm,dp=0.2cm]{}
     \hspace{0.3cm}
     \includegraphics[height=1cm]{logo-uet.jpg}
     \hfill
-    {\Large\bfseries \insertsection}
+    \parbox{0.6\paperwidth}{\centering\Large\bfseries\insertsection}
     \hfill
     \includegraphics[height=1cm]{logo-sae.jpg}
     \hspace{0.3cm}
   \end{beamercolorbox}
 }
-
 
 \begin{document}
 
@@ -292,7 +291,7 @@ U_{\text{rep}_{i,O}} =
     \textbf{F}_{res_i} = -\nabla{U_{res_i}}.
 \end{equation}
 \tiny {
-    O. Khatib, ”Real-time obstacle avoidance for manipulators and mobile robots”,Proceedings. 1985 IEEE International Conference on Robotics and Automation,1985.
+    [6] O. Khatib, ”Real-time obstacle avoidance for manipulators and mobile robots”,Proceedings. 1985 IEEE International Conference on Robotics and Automation,1985.
 }
 \end{frame}
 \begin{frame}
@@ -317,7 +316,7 @@ keepaspectratio
 \begin{columns}[T]
 
 % ===== CỘT TRÁI =====
-\column{0.7\textwidth}
+\column{0.74\textwidth}
 \scriptsize
 
 \textbf{Bước nhảy ràng buộc động học}
@@ -359,14 +358,14 @@ U_{\text{rep},o} =
 % ===== CỘT PHẢI =====
 \column{0.38\textwidth}
 \centering
-
+\vspace{-0.65 cm}
 \includegraphics[
-  width=\linewidth,
-  height=\textheight,
+  width=0.9\linewidth,
+  height=0.9\textheight,
   keepaspectratio
 ]{hinh2-2.png}
 
-\vspace{0.2cm}
+\vspace{0.05cm}
 
 \includegraphics[
   width=\linewidth,
@@ -375,5 +374,457 @@ U_{\text{rep},o} =
 ]{hinh2-3.png}
 
 \end{columns}
+\end{frame}
+
+\begin{frame}
+\frametitle{Thuật toán trường thế năng nhân tạo cải tiến cho drone trình diễn ánh sáng}
+
+\begin{columns}[T]
+
+% ===== CỘT TRÁI =====
+\column{0.74\textwidth}
+\scriptsize
+
+\textbf{Bước nhảy ràng buộc động học}
+\begin{equation}
+{\scriptsize
+\lambda =
+\begin{cases}
+\sqrt{2ad_{\min}}\cdot T, & d_{\min} \le \dfrac{v_{\max}^2}{2a} \\
+v_{\max}\cdot T, & \text{ngược lại}
+\end{cases}}
+\end{equation}
+
+\begin{equation}
+{\scriptsize
+d_{\min}
+=
+\min\!\left(
+\|\mathbf{p}_i^s-\mathbf{p}_i^t\|,
+\|\mathbf{p}_i^e-\mathbf{p}_i^t\|,
+\|\mathbf{p}_O^t-\mathbf{p}_i^t\|
+\right)}
+\end{equation}
+
+\textbf{Trường thế đẩy phân lớp}
+\begin{equation}
+{\scriptsize
+U_{\text{rep},o} =
+\begin{cases}
+\frac{1}{2}\eta_1\!\left( \frac{1}{\|\mathbf{p}_o^t-\mathbf{p}_i^t\|} - \frac{1}{\rho_1} \right)^2,
+& \|\mathbf{p}_o^t-\mathbf{p}_i^t\| \le \rho_1 \\[4pt]
+
+\frac{1}{2}\eta_2\!\left( \frac{1}{\|\mathbf{p}_o^t-\mathbf{p}_i^t\|} - \frac{1}{\rho_2} \right)^2,
+& \rho_1 < \|\mathbf{p}_o^t-\mathbf{p}_i^t\| \le \rho_2 \\[4pt]
+
+0, & \|\mathbf{p}_o^t-\mathbf{p}_i^t\| > \rho_2
+\end{cases}}
+\end{equation}
+
+% ===== CỘT PHẢI =====
+\column{0.38\textwidth}
+\centering
+\vspace{-0.65 cm}
+\includegraphics[
+  width=0.9\linewidth,
+  height=0.9\textheight,
+  keepaspectratio
+]{hinh2-2.png}
+
+\vspace{0.05cm}
+
+\includegraphics[
+  width=\linewidth,
+  height=\textheight,
+  keepaspectratio
+]{hinh2-3.png}
+
+\end{columns}
+\end{frame}
+\begin{frame}
+\frametitle{Thuật toán trường thế năng nhân tạo cải tiến cho drone trình diễn ánh sáng}
+\begin{columns}[T]
+\column{0.6\textwidth}
+\scriptsize
+\textbf{Thuật toán hoán đổi mục tiêu}
+\begin{itemize}
+    \item Điều kiện thứ nhất có ít nhất một drone d bước vào phạm vi của ít nhất hai drone khác đã hoàn thành nhiệm vụ d.
+    \item Điều kiện thứ hai có ít nhất một drone tạo trường đẩy giữa drone d và mục tiêu của nó.
+    \item Điều kiện thứ ba là khoảng cách giữa vị trí hiện tại của drone d đến mục tiêu lớn hơn khoảng cách giữa vị trí của drone d với mục tiêu ở vòng lặp trước đó
+\end{itemize}
+Nếu cả ba điều kiện này đều thỏa mãn đồng thời thì kích hoạt thuật toán hoán đổi mục tiêu, phương pháp hoán đổi là trong các drone thỏa mãn điều kiện hai chọn drone gần
+với drone hiện đang mắc kẹt trong nghiệm tối ưu cục bộ.
+\column{0.4\textwidth}
+\centering
+\vspace{-0.65 cm}
+\includegraphics[
+  width=\linewidth,
+  height=\textheight,
+  keepaspectratio
+]{hinh2-4.png}
+
+\vspace{0.05cm}
+
+\includegraphics[
+  width=\linewidth,
+  height=\textheight,
+  keepaspectratio
+]{hinh2-5.png}
+\end{columns}
+\vspace{0.05 cm}
+\tiny {
+    [4] H.Sun, J.Qi, M.Wang ”Path Planning for Dense Drone Formation Based on Modiefield Aritificial Potential Field”, Proceedings of 39th Chinese Control
+Conference, Shenyang, China, 2020, pp.4658-4664.
+}
+
+\end{frame}
+\begin{frame}
+\frametitle{Khung chương trình tính toán điểm điều hướng đề xuất}
+\begin{columns}[T]
+\column{0.4\textwidth}
+\footnotesize
+
+\begin{equation}
+    \lambda_{kđ} = a_{max}\cdot T^{2}
+\end{equation}
+\begin{equation}
+    v^t_i = \|\textbf{p}^t_i - \textbf{p}^{t-1}_i|\ \cdot T
+\end{equation}
+\begin{equation}
+    a^t_i = \| a^t_i - a^{t-1}_i\| \cdot T
+\end{equation}
+\begin{equation}
+\begin{aligned}
+    d_{\min} &=
+    \min\left\| \textbf{p}_i^t - \textbf{p}_j^t \right\|, \\
+    &\quad j \ne i,\; i,j \in \{1,\ldots,n\}
+\end{aligned}
+\end{equation}
+\column{0.6\textwidth}
+\vspace{-0.1 cm}
+\includegraphics[
+  width=\linewidth,
+  height=\textheight,
+  keepaspectratio
+]{hinh2-6.png}
+\end{columns}
+\end{frame}
+
+\section{Triển khai thuật toán quy hoạch đường đi trên GPU}
+\begin{frame}
+\frametitle{GPU và PyOpenCL}
+
+\begin{columns}[T]
+\begin{column}{0.5\textwidth}
+\vspace{-0.1 cm}
+\textbf{\normalsize Tại sao dùng GPU?}
+\begin{itemize}
+    \item[\textbullet] \small Độ phức tạp thuật toán: \(O(n^2)\) với \(n\) drone
+    \item[\textbullet] \small CPU quá chậm khi mô phỏng hàng trăm drone
+    \item[\textbullet] \small GPU có hàng nghìn lõi xử lý song song
+\end{itemize}
+
+\vspace{0.5 pt}
+
+\textbf{\normalsize Tại sao chọn PyOpenCL?}
+\begin{itemize}
+    \item[\textbullet] \small Hỗ trợ đa nền tảng (AMD, NVIDIA, Intel)
+    \item[\textbullet] \small Card AMD Radeon RX 5600M (không hỗ trợ CUDA, ROCm)
+    \item[\textbullet] \small Giao diện Python dễ dùng, tích hợp NumPy phù hợp minh họa nguyên lý song song thuật toán
+\end{itemize}
+\end{column}
+
+\begin{column}{0.46\textwidth}
+\vspace{-0.5 cm}
+\textbf{\normalsize Kiến trúc OpenCL:}
+\begin{itemize}
+    \item[\textbullet] \small \textbf{Platform}: Nhà cung cấp phần cứng
+    \item[\textbullet] \small \textbf{Device}: GPU/CPU cụ thể
+    \item[\textbullet] \small \textbf{Context}: Môi trường thực thi
+    \item[\textbullet] \small \textbf{Kernel}: Hàm chạy song song
+    \item[\textbullet] \small \textbf{Buffer}: Vùng nhớ chia sẻ
+\end{itemize}
+
+\vspace{4pt}
+
+\textbf{\normalsize Quy trình làm việc:}
+\begin{enumerate}
+    \item \small Khởi tạo context và queue
+    \item \small Tạo buffer cho dữ liệu
+    \item \small Thực thi kernel trên GPU
+    \item \small Đồng bộ và lấy kết quả
+\end{enumerate}
+\end{column}
+\end{columns}
+\end{frame}
+
+\begin{frame}
+\frametitle{Lựa chọn thành phần song song hóa}
+\begin{columns}[T]
+\column{0.45\textwidth}
+\textbf{\normalsize Lựa chọn tính lực tổng hợp}
+\vspace{-0.35 cm}
+    \begin{block}{\small Tính song song hóa cao}
+    \footnotesize
+    \begin{itemize}
+        \item Mỗi drone tính toán độc lập
+        \item Cùng một công thức cho tất cả
+        \item Ít rẽ nhánh, cấu trúc đều đặn
+    \end{itemize}
+    \end{block}
+\vspace{-0.35 cm}
+    \begin{block}{\small Chiếm phần lớn thời gian tính toán}
+    \footnotesize
+    \begin{itemize}
+        \item Độ phức tạp cao $O(n^2)$
+        \item Thực hiện nhiều phép tính toán so với phần tính $\lambda$
+        \item Luật Amdahl: tập trung tăng tốc phần tính toán lâu nhất để đạt hiệu quả tối đa
+    \end{itemize}
+    \end{block}
+\column{0.55\textwidth}
+\includegraphics[
+  width=\linewidth,
+  height=\textheight,
+  keepaspectratio
+]{hinh3-3.jpg}
+\end{columns}
+\end{frame}
+\begin{frame}
+\frametitle{Kernel tính toán lực tổng hợp trên GPU}
+\begin{columns}
+\column{0.55\textwidth}
+\textbf{Kiến trúc Song Song}
+\begin{itemize}
+    \item \textbf{Mô hình 1 drone - 1 luồng:} Ánh xạ trực tiếp, đơn giản hóa điều phối
+    \item \textbf{Work-group 64 luồng:} Tận dụng tối đa kiến trúc GPU AMD (wavefront size = 64)
+    \item \textbf{Kỹ thuật Chia Ô (Tiling):} 
+    \begin{itemize}
+        \footnotesize
+        \item Giảm đáng kể truy cập bộ nhớ toàn cục (Global Memory)
+        \item Tăng tốc nhờ bộ nhớ cục bộ tốc độ cao (Local Memory)
+    \end{itemize}
+\end{itemize}
+\column{0.45\textwidth}
+    \includegraphics[
+     width=0.8\linewidth,
+     height=0.7\textheight,
+     keepaspectratio
+]{Kernel.png}
+\end{columns}
+\vspace{0.5 cm}
+\tiny{
+    [7] Cedric Nugteren, ”Tutorial: OpenCL SGEMM tuning for Kepler”
+}
+\end{frame}
+\section{Mô phỏng và phân tích kết quả}
+\begin{frame}
+    \frametitle{Kết quả thời gian tính toán}
+    \scriptsize
+Mô phỏng được thực hiện trên máy tính cá nhân với CPU Intel Core i7-10750H (6 nhân, 12 luồng), RAM 16 GB và GPU AMD Radeon RX 5600M (6 GB).
+    \begin{itemize}
+        \item Với số lượng drone nhỏ (< 10), CPU nhanh hơn do chi phí khởi tạo GPU.
+        \item Khi số lượng drone tăng, GPU thể hiện rõ ưu thế nhờ xử lý song song.
+        \item Thời gian tính toán lực tổng hợp trên GPU dưới 0.5s ngay cả với số lượng drone lên đến 600 trong khi trên CPU tăng rất nhanh.
+    \end{itemize}
+    \begin{table}[H]
+    {So sánh thời gian tính toán trên CPU và GPU}
+    \centering
+    \begin{tabular}{|p{1.5 cm}|p{2 cm}|p{2 cm}|p{2 cm}|p{2 cm}|}
+    \hline
+    Số lượng drone & Thời gian tính toán trên CPU (s) & Thời gian tính toán có sử dụng GPU (s) & Thời gian tính toán lực trên CPU (s) & Thời gian tính toán kernel lực tổng hợp
+    trên GPU (s)\\
+    \hline
+    5 & 0.04 & 0.06 & 0.01 & 0.03 \\
+    \hline
+    10 & 0.11 & 0.10 & 0.04 & 0.03 \\
+    \hline
+    25 & 0.48 & 0.31 & 0.23 & 0.05 \\
+    \hline
+    125 & 10.87 & 5.28 & 5.87 & 0.28 \\
+    \hline
+    250 & 44.2 & 21.19 & 23.81 & 0.3 \\
+    \hline
+    600 & 446.07 & 178.19 & 266.04 & 0.47 \\
+    \hline
+    \end{tabular}
+    
+\end{table}
+\end{frame}
+\begin{frame}
+\frametitle{Kịch bản khảo sát}
+\scriptsize
+
+\begin{itemize}
+\item Chuyển đổi đội hình từ chữ ``SAE-UET'' sang ``DRONE'' với 600 drone.
+
+\item Các thông số cố định:
+\[
+\rho_1 = 2.5\,\text{m},\quad
+\rho_2 = 3.5\,\text{m},\quad
+a_{\max} = 3\,\text{m/s}^2,\quad
+v_{\max} = 3\,\text{m/s},\quad
+T = \frac{1}{25}\,\text{s}
+\]
+
+\item Khảo sát ảnh hưởng của các tham số APF:
+hệ số hấp dẫn $\varepsilon$, trường đẩy lớp trong $\eta_1$
+và lớp ngoài $\eta_2$
+\end{itemize}
+
+\vspace{0.2cm}
+
+\begin{columns}[T]
+\column{0.5\textwidth}
+\centering
+\includegraphics[width=\linewidth]{hinh4-2.png}
+\textbf{Các đội hình thiết kế}
+\column{0.5\textwidth}
+\centering
+\includegraphics[width=\linewidth]{hinh4-3.jpg}
+\textbf{Đường đi cần phân tích}
+
+\end{columns}
+\end{frame}
+\begin{frame}
+    \frametitle{\small Trường hợp 1: $\varepsilon = 5, \eta_1 = 5, \eta_2 = 500$}
+    
+    % Hàng 1: Hai ảnh
+    \begin{minipage}[t]{\textwidth}
+        \centering
+        \begin{minipage}{0.48\textwidth}
+            \centering
+            \includegraphics[width=\linewidth]{giatoc1.png}
+        \end{minipage}
+        \hfill
+        \begin{minipage}{0.48\textwidth}
+            \centering
+            \includegraphics[width=\linewidth]{vantoc1.png}
+        \end{minipage}
+    \end{minipage}    
+    % Hàng 2: Một ảnh căn giữa
+    \begin{minipage}[t]{\textwidth}
+        \centering
+        \includegraphics[width=0.68\textwidth]{khoangcach1.png} % Có thể điều chỉnh width
+    \end{minipage}
+\end{frame}
+\begin{frame}
+    \frametitle{\small Trường hợp 2: $\varepsilon = 3, \eta_1 = 8, \eta_2 = 500$}
+    
+    % Hàng 1: Hai ảnh
+    \begin{minipage}[t]{\textwidth}
+        \centering
+        \begin{minipage}{0.48\textwidth}
+            \centering
+            \includegraphics[width=\linewidth]{giatoc2.png}
+        \end{minipage}
+        \hfill
+        \begin{minipage}{0.48\textwidth}
+            \centering
+            \includegraphics[width=\linewidth]{vantoc2.png}
+        \end{minipage}
+    \end{minipage}    
+    % Hàng 2: Một ảnh căn giữa
+    \begin{minipage}[t]{\textwidth}
+        \centering
+        \includegraphics[width=0.68\textwidth]{khoangcach2.png} % Có thể điều chỉnh width
+    \end{minipage}
+\end{frame}
+\begin{frame}
+    \frametitle{\small Trường hợp 3: $\varepsilon = 3, \eta_1 = 30, \eta_2 = 500$}
+    
+    % Hàng 1: Hai ảnh
+    \begin{minipage}[t]{\textwidth}
+        \centering
+        \begin{minipage}{0.48\textwidth}
+            \centering
+            \includegraphics[width=\linewidth]{giatoc3.png}
+        \end{minipage}
+        \hfill
+        \begin{minipage}{0.48\textwidth}
+            \centering
+            \includegraphics[width=\linewidth]{vantoc3.png}
+        \end{minipage}
+    \end{minipage}    
+    % Hàng 2: Một ảnh căn giữa
+    \begin{minipage}[t]{\textwidth}
+        \centering
+        \includegraphics[width=0.68\textwidth]{khoangcach3.png} % Có thể điều chỉnh width
+    \end{minipage}
+\end{frame}
+\begin{frame}
+    \frametitle{So sánh với nghiên cứu của Sun [4]}
+    \begin{columns}
+    \column{0.4\textwidth}
+    \scriptsize
+    \begin{itemize}
+        \item Phương pháp đề xuất giảm đáng kể thời gian chuyển đổi (19.03 lần).
+
+        \item Giảm số lần hoán đổi, chứng tỏ ít xảy ra kẹt cục bộ.
+
+        \item Quỹ đạo mượt hơn, an toàn hơn với khoảng cách giữa các drone được cải thiện, gia tốc được giới hạn tốt hơn trong khi đó vận tốc ở hai phương pháp luôn luôn được giới hạn.
+    \end{itemize}
+    \column{0.6\textwidth}
+    \begin{table}[H]
+    \scriptsize
+    {Các thông số của buổi trình diễn}
+    \centering
+    \begin{tabular}{|p{3cm}|p{1cm}|p{1cm}|}
+        \hline
+         & APF & Hungarian kết hợp APF\\ \hline
+        Trung bình chi phí phân công & 161.5 & 21.25\\ \hline
+        Thời gian thực hiện chuyển đổi & 368.56 & 19.36\\ \hline
+        Số lần hoán đổi & 5 & 1\\ \hline
+        Gia tốc lớn nhất ($\frac{m}{s^2}$) & 4.1 & 3\\ \hline
+        Vận tốc lớn nhất ($\frac{m}{s}$)& 3&3\\ \hline
+        Khoảng cách nhỏ nhất giữa các drone & 2.7&2.82\\ \hline
+    \end{tabular}
+    \end{table}
+    \end{columns}
+\tiny{
+     [4] H.Sun, J.Qi, M.Wang, ”Path Planning for Dense Drone Formation Based on Modiefield Aritificial Potential Field”, Proceedings of 39th Chinese Control Conference, Shenyang, China, 2020, pp.4658-4664. 
+}
+\end{frame}
+\section{Kết luận và hướng phát triển}
+\begin{frame}
+    \scriptsize
+    \frametitle{Kết quả đạt được và hạn chế }
+    \textbf{Kết quả đạt được}
+    \begin{itemize}
+        \item Phát triển thành công khung tính toán điều hướng kết hợp thuật toán Hungarian giúp tối ưu phân công nhiệm vụ, giảm tổng quãng đường bay, trường thế năng nhân tạo cải tiến giúp tránh va chạm, đảm bảo ràng buộc động học
+        và thoát khỏi cực tiểu cục bộ.
+        \item Cải thiện hiệu suất chuyển đổi đội hình giảm thời gian bay và mắc kẹt cục bộ, khoảng cách các drone được đảm bảo hơn, ràng buộc động học tốt hơn
+        \item Song song hóa phần tính lực tổng hợp với PyOpenCL đạt được hiệu quả rõ rệt vơi số lượng drone lớn.
+        \item Một phần kết quả trong đồ án đã được trình bày tại $\textbf{Vu Duc Luong}$, Tran Dang Huy, Nguyen Hoang Quan, "Assignment and Path Planning for Drone Light Show", $\textit{$8^{th}$ International Conference of Engineering Mechanics and Automation}$
+    \end{itemize}
+    \textbf{Hạn chế}
+    \begin{itemize}
+        \item Chưa xét ảnh hưởng của gió, sai số định vị GNSS-RTK và hệ thống điều khiển. Drone được mô hình hóa đơn giản như một vật rắn
+        \item Tham số APF được chọn qua thử nghiệm chưa áp dụng tối ưu hóa tự động
+        \item Phần tính toán GPU chỉ song song hóa phần tính lực phần cứng sử dụng là card gaming, chưa chuyên dụng cho tính toán hiệu năng cao.
+    \end{itemize}
+\end{frame}
+\begin{frame}
+    \frametitle{Hướng phát triển}
+    \begin{itemize}
+        \item Tích hợp ảnh hưởng môi trường như gió, nhiễu tín hiệu, hay mô hình bộ điều khiển bay thực tế.
+        \item Áp dụng thuật toán meta-heuristic (GA, PSO) để tìm tham số APF tối ưu
+        \item Khai thác tối đa hiệu năng GPU song song hóa thêm các thành phần tính λ, cập nhật vị trí và triển khai trên phần cứng chuyên dụng (NVIDIA Tesla)
+    \end{itemize}   
+\end{frame}
+\section*{} % Tạo một section rỗng để reset header
+
+\begin{frame}
+    \frametitle{}
+    
+    \centering
+    \vspace{1cm}
+    
+    \LARGE
+    \textbf{Cảm ơn thầy cô và các bạn \\
+    đã lắng nghe bài trình bày}
+    
+    \vspace{2.5cm}
+    \normalsize
+    \textbf{Mọi ý kiến đóng góp đều được trân trọng tiếp thu}
 \end{frame}
 \end{document}

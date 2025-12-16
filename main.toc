@@ -1,2 +1,5 @@
 \beamer@sectionintoc {1}{Tổng quan}{3}{0}{1}
 \beamer@sectionintoc {2}{Cơ sở lý thuyết}{7}{0}{2}
+\beamer@sectionintoc {3}{Triển khai thuật toán quy hoạch đường đi trên GPU}{15}{0}{3}
+\beamer@sectionintoc {4}{Mô phỏng và phân tích kết quả}{18}{0}{4}
+\beamer@sectionintoc {5}{Kết luận và hướng phát triển}{24}{0}{5}
